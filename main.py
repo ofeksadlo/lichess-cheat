@@ -12,12 +12,11 @@ def matchImages(img1, img2):
 def getLastMove(board, cellSize=92):
     # Reading the cell templates later on we will match them to the board cells.
     movedFromCell_whiteTemplate = cv2.imread('data/white_from.jpg')
-    movedToCell_whiteTemplate = cv2.imread('data/white_to.jpg')
     movedFromCell_blackTemplate = cv2.imread('data/black_from.jpg')
-    movedToCell_blackTemplate = cv2.imread('data/black_to.jpg')
     # Creating a list with alphabet range a-h (8 letters total).
     letters = list(ascii_lowercase[:8])
     lastMoveSet = ''
+    # We are looping from the top left corner of the board
     for y in range(8):
         for x in range(8):
             # Initializing the board cell according to the cell size
