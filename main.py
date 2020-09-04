@@ -16,12 +16,12 @@ def getLastMove(board, cellSize=92):
     movedFromCell_blackTemplate = cv2.imread('data/black_from.jpg')
     movedToCell_blackTemplate = cv2.imread('data/black_to.jpg')
     # Creating a list with alphabet range a-h (8 letters total).
-    letters = list(ascii_lowercase[:7])
+    letters = list(ascii_lowercase[:8])
     lastMoveSet = ''
     for y in range(8):
         for x in range(8):
             # Initializing the board cell according to the cell size
-            board_cell = board[y * cellSize:(y+1) * cellSize, x * cellSize:(x+1) * cellSize]
+            board_cell = board[x * cellSize:(x+1) * cellSize, y * cellSize:(y+1) * cellSize]
             # Here we check the board cell to match with are templates.
             # We first check if the cell is where the piece moved from.
             # Because it's supposed to be an absolute match (same exact picture).
@@ -30,12 +30,18 @@ def getLastMove(board, cellSize=92):
             # it will have a diffrent color, if it moved from a white piece.
             # If the cell is not piece that moved from. Then
             # we check if it's a piece that moved to this cell. Again for both templates white and black.
-            if matchImages(board_cell[1:2, 1:2], movedFromCell_whiteTemplate[1:2,1:2]) < 10 and matchImages(board_cell[45:47,45:47], movedFromCell_whiteTemplate[45;47,45:47])<10:
+            if matchImages(board_cell[1:2, 1:2], movedFromCell_whiteTemplate[1:2,1:2]) < 10 and matchImages(board_cell[45:47,45:47], movedFromCell_whiteTemplate[45:47,45:47])<10:
                 lastMoveSet += letters[y]+str(8-x)
-            elif matchImages(board_cell[1:2, 1:2], movedFromCell_blackTemplate[1:2,1:2]) < 10 and matchImages(board_cell[45:47,45:47], movedFromCell_blackTemplate[45;47,45:47])<10:
+            elif matchImages(board_cell[1:2, 1:2], movedFromCell_blackTemplate[1:2,1:2]) < 10 and matchImages(board_cell[45:47,45:47], movedFromCell_blackTemplate[45:47,45:47])<10:
                 lastMoveSet += letters[y]+str(8-x)
             elif matchImages(board_cell[1:2, 1:2], movedFromCell_whiteTemplate[1:2,1:2]) < 10:
                 lastMoveSet += letters[y]+str(8-x)
             elif matchImages(board_cell[1:2, 1:2], movedFromCell_blackTemplate[1:2,1:2]) < 10:
                 lastMoveSet += letters[y]+str(8-x)
+    return lastMoveSet
 
+board = cv2.imread('frame.png')
+print(getLastMove(board))
+
+cv2.imshow('', board)
+cv2.waitKey(0)
