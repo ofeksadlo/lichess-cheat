@@ -3,11 +3,29 @@ from pyautogui import screenshot
 import numpy as np
 from string import ascii_lowercase
 
-# Check 2 images for missmatched pixels. The lower the number the better the match
+
+
+
+
+# Check 2 images for missmatched pixels. The lower the number the better the match.
+# (This is a very simple method for image matching but efficent for our cause.)
 def matchImages(img1, img2):
     err = np.sum((img1.astype("float") - img2.astype("float")) ** 2)
     err /= float(img1.shape[0]*img2.shape[1])
     return err
+
+# Using image matching we will check if it's the client turn.
+# Further more we will test if the client is on game to avoid failing.
+def checkTurn(turnImg):
+    clientTurns = None
+    clientTurns_template = cv2.imread('data/turn.png')
+    opponentTurns_template = cv2.imread('data/noturn.png')
+    if matchImages(turnImg, clientTurns_template) < 10:
+        clientTurns = True
+    elif matchImages(turnImg, opponentTurns_template) < 10:
+        clientTurns = False
+    return clientTurns
+
 # Gets board image and return last moveset.
 def getLastMove(board, cellSize=92):
     # Reading the cell templates later on we will match them to the board cells.
@@ -41,6 +59,9 @@ def getLastMove(board, cellSize=92):
 
 board = cv2.imread('frame.png')
 print(getLastMove(board))
+turn = cv2.imread('turn.png')
+print(checkTurn(turn))
+
 
 cv2.imshow('', board)
 cv2.waitKey(0)
