@@ -4,7 +4,8 @@ import numpy as np
 from string import ascii_lowercase
 
 
-
+import os
+os.system("mode con cols=50 lines=20")
 
 
 # Check 2 images for missmatched pixels. The lower the number the better the match.
@@ -14,15 +15,15 @@ def matchImages(img1, img2):
     err /= float(img1.shape[0]*img2.shape[1])
     return err
 
-# Using image matching we will check if it's the client turn.
+# Using image matching we will check if it's the client turnImg.
 # Further more we will test if the client is on game to avoid failing.
 def checkTurn(turnImg):
     clientTurns = None
     clientTurns_template = cv2.imread('data/turn.png')
     opponentTurns_template = cv2.imread('data/noturn.png')
-    if matchImages(turnImg, clientTurns_template) < 10:
+    if matchImages(turnImg, clientTurns_template) < 30:
         clientTurns = True
-    elif matchImages(turnImg, opponentTurns_template) < 10:
+    elif matchImages(turnImg, opponentTurns_template) < 30:
         clientTurns = False
     return clientTurns
 
@@ -33,7 +34,7 @@ def getLastMove(board, cellSize=92):
     movedFromCell_blackTemplate = cv2.imread('data/black_from.jpg')
     # Creating a list with alphabet range a-h (8 letters total).
     letters = list(ascii_lowercase[:8])
-    lastMoveSet = ''
+    lastMoveSet = ['','']
     # We are looping from the top left corner of the board
     for y in range(8):
         for x in range(8):
@@ -48,20 +49,35 @@ def getLastMove(board, cellSize=92):
             # If the cell is not piece that moved from. Then
             # we check if it's a piece that moved to this cell. Again for both templates white and black.
             if matchImages(board_cell[1:2, 1:2], movedFromCell_whiteTemplate[1:2,1:2]) < 10 and matchImages(board_cell[45:47,45:47], movedFromCell_whiteTemplate[45:47,45:47])<10:
-                lastMoveSet += letters[y]+str(8-x)
+                lastMoveSet[0] = letters[y]+str(8-x)
             elif matchImages(board_cell[1:2, 1:2], movedFromCell_blackTemplate[1:2,1:2]) < 10 and matchImages(board_cell[45:47,45:47], movedFromCell_blackTemplate[45:47,45:47])<10:
-                lastMoveSet += letters[y]+str(8-x)
+                lastMoveSet[0] = letters[y]+str(8-x)
             elif matchImages(board_cell[1:2, 1:2], movedFromCell_whiteTemplate[1:2,1:2]) < 10:
-                lastMoveSet += letters[y]+str(8-x)
+                lastMoveSet[1] = letters[y]+str(8-x)
             elif matchImages(board_cell[1:2, 1:2], movedFromCell_blackTemplate[1:2,1:2]) < 10:
-                lastMoveSet += letters[y]+str(8-x)
+                lastMoveSet[1] = letters[y]+str(8-x)
+
+            
+    
     return lastMoveSet
 
-board = cv2.imread('frame.png')
-print(getLastMove(board))
-turn = cv2.imread('turn.png')
-print(checkTurn(turn))
+lastMove = ['','']
+while True:
+    screenshot('turn.png', region=(1326, 670,78,16))
+    turnImg = cv2.imread('turn.png')
+    if checkTurn(turnImg) == True:
+        screenshot('board.png', region=(575,164,735,735))
+        board = cv2.imread('board.png')
+        if getLastMove(board) != '':
+            if lastMove != getLastMove(board):
+                lastMove = getLastMove(board)
+                print(lastMove)
+        # cv2.waitKey(1000)
+    cv2.waitKey(500)
 
 
-cv2.imshow('', board)
-cv2.waitKey(0)
+    
+    
+# board = cv2.imread('frame.png')
+
+# print(getLastMove(board))
