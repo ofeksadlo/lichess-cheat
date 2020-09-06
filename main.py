@@ -7,18 +7,20 @@ from datetime import datetime
 
 stockfish = Stockfish('C:\stockfish_20090216_x64_bmi2.exe', parameters={"Threads" : 7, "Ponder" : True, "Skill Level": 20, "Contempt": 0, "Slow Mover": 84})
 
-
+cv2.namedWindow('Board')
 hwnd = win32gui.GetForegroundWindow()
-win32gui.SetWindowPos(hwnd,win32con.HWND_TOPMOST,1600,300,200,200,0)
+win32gui.SetWindowPos(hwnd,win32con.HWND_TOPMOST,575,164,200,200,0)
 
 
 def checkTurn(turnImg):
     clientTurns = None
     clientTurns_template = cv2.imread('data/turn.png')
     opponentTurns_template = cv2.imread('data/noturn.png')
-    if matchImages(turnImg, clientTurns_template) < 30:
+    PC_clientTurns_template = cv2.imread('data/pc_turn.png')
+    PC_opponentTurns_template = cv2.imread('data/pc_noturn.png')
+    if matchImages(turnImg, clientTurns_template) < 30 or matchImages(turnImg, PC_clientTurns_template) < 30:
         clientTurns = True
-    elif matchImages(turnImg, opponentTurns_template) < 30:
+    elif matchImages(turnImg, opponentTurns_template) < 30 or matchImages(turnImg, PC_opponentTurns_template) < 30:
         clientTurns = False
     return clientTurns
 
@@ -28,6 +30,32 @@ def matchImages(img1, img2):
     err = np.sum((img1.astype("float") - img2.astype("float")) ** 2)
     err /= float(img1.shape[0]*img2.shape[1])
     return err
+
+
+def drawOnBoard(board, moveset, cellSize=92):
+
+    letters = list(ascii_lowercase[:8])
+
+    movedFromCell_whiteTemplate = cv2.imread('data/white_from.jpg')
+    movedFromCell_blackTemplate = cv2.imread('data/black_from.jpg')
+    movedToCell_whiteTemplate = cv2.imread('data/black_to.jpg')
+    movedToCell_blackTemplate = cv2.imread('data/white_to.jpg')
+
+    painted_board = board.copy()
+    cell1 = moveset[0] + moveset[1]
+    cell2 = moveset[2] + moveset[3]
+    for y in range(8):
+        for x in range(8):
+            board_cell = board[x * cellSize:(x+1) * cellSize, y * cellSize:(y+1) * cellSize]
+            if letters[y]+str(8-x) == cell1:
+                painted_board = cv2.rectangle(painted_board, (y*cellSize, x*cellSize), ((y+1)*cellSize, (x+1)*cellSize), (255,0,0), thickness=2)
+            elif  letters[y]+str(8-x) == cell2:
+                painted_board = cv2.rectangle(painted_board, (y*cellSize, x*cellSize), ((y+1)*cellSize, (x+1)*cellSize), (255,0,0), thickness=2)
+
+    return painted_board
+
+
+
 # Gets board image and return last moveset.
 def getLastMove(board, cellSize=92):
     e8LightGreen = False
@@ -91,6 +119,7 @@ def getLastMove(board, cellSize=92):
 
     return lastMoveSet
 
+board = None
 firstTurn = 2
 clientTurns = True
 gameMoveSet = []
@@ -99,12 +128,15 @@ nextBestMove = None
 f= open('logs/logFile.txt', 'a')
 f.write('')
 while True:
+    # win32gui.ShowWindow(hwnd, win32con.SW_MINIMIZE)
     screenshot('turn.png', region=(1335, 665,10,16))
     turnImg = cv2.imread('turn.png')
     newClientsTurn = checkTurn(turnImg)
     if clientTurns != newClientsTurn or firstTurn > 0:
         clientTurns = newClientsTurn
-        cv2.waitKey(1000)
+        if firstTurn > 0:
+            cv2.waitKey(1500)
+        cv2.waitKey(500)
         screenshot('board.png', region=(575,164,735,735))
         board = cv2.imread('board.png')
         if getLastMove(board) != '':
@@ -120,6 +152,16 @@ while True:
                 nextBestMove = stockfish.get_best_move()
                 print('Best next move: ' + nextBestMove)
                 print("------------------")
+    
+    if nextBestMove is not None:
+        board_show = cv2.imread('board.png')
+        board_show = drawOnBoard(board_show, nextBestMove)
+        board_show = cv2.resize(board_show, None, fx=0.5, fy=0.5)
+        # print(nextBestMove)
+        # win32gui.SetWindowPos(hwnd,win32con.HWND_TOPMOST,575,164,735,735,0)
+        cv2.imshow('Board', board_show)
+
+
     
     cv2.waitKey(1)
 f.close()
