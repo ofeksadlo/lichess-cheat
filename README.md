@@ -15,4 +15,5 @@ will feed the stockfish engine with the game movesets in order to get the best n
 The method is quite easy actually. In order to get prediction for next moves we need to detect which pieces already moved.
 In lichess site it's done by drawing the green color around the cell. So we need to detect 2 specific cells.
 One green cell without a piece in it (Where the piece moved from) and one green cell with a piece in it (Where the piece moved to).
+The detection is done by color matching.
 Now we have the last moveset and we can feed are stockfish engine to get predictions.
