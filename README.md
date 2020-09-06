@@ -13,5 +13,6 @@ to detect if a piece moved. If a piece moved it append to the game moveset. Then
 will feed the stockfish engine with the game movesets in order to get the best next move.
 
 The method is quite easy actually. In order to get prediction for next moves we need to detect which pieces already moved.
-In lichess site it's done by drawing the green color around the cell. So we need to detect 2 specific cell.
+In lichess site it's done by drawing the green color around the cell. So we need to detect 2 specific cells.
 One green cell without a piece in it (Where the piece moved from) and one green cell with a piece in it (Where the piece moved to).
+Now we have the last moveset and we can feed are stockfish engine to get predictions.
