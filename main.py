@@ -3,10 +3,13 @@ from pyautogui import screenshot
 import numpy as np
 from string import ascii_lowercase
 from stockfish import Stockfish
-stockfish = Stockfish('C:\stockfish_20090216_x64_bmi2.exe')
+from datetime import datetime
 
-# hwnd = win32gui.GetForegroundWindow()
-# win32gui.SetWindowPos(hwnd,win32con.HWND_TOPMOST,1600,300,200,200,0)
+stockfish = Stockfish('C:\stockfish_20090216_x64_bmi2.exe', parameters={"Threads" : 7, "Ponder" : True, "Skill Level": 20, "Contempt": 0, "Slow Mover": 84})
+
+
+hwnd = win32gui.GetForegroundWindow()
+win32gui.SetWindowPos(hwnd,win32con.HWND_TOPMOST,1600,300,200,200,0)
 
 
 def checkTurn(turnImg):
@@ -29,6 +32,7 @@ def matchImages(img1, img2):
 def getLastMove(board, cellSize=92):
     e8LightGreen = False
     h8DarkGreen = False
+    a8LightGreen = False
     castling = False
     # Reading the cell templates later on we will match them to the board cells.
     movedFromCell_whiteTemplate = cv2.imread('data/white_from.jpg')
@@ -63,6 +67,8 @@ def getLastMove(board, cellSize=92):
             if matchImages(board_cell[1:2, 1:2], movedFromCell_whiteTemplate[1:2,1:2]) < 10 and matchImages(board_cell[45:47,45:47], movedFromCell_whiteTemplate[45:47,45:47])<10:
                 if letters[y]+str(8-x) == 'e8':
                     e8LightGreen = True
+                elif letters[y]+str(8-x) == 'a8':
+                    a8LightGreen = True
                 lastMoveSet[0] = letters[y]+str(8-x)
             elif matchImages(board_cell[1:2, 1:2], movedFromCell_blackTemplate[1:2,1:2]) < 10 and matchImages(board_cell[45:47,45:47], movedFromCell_blackTemplate[45:47,45:47])<10:
                 if letters[y]+str(8-x) == 'h8':
@@ -76,39 +82,44 @@ def getLastMove(board, cellSize=92):
     if e8LightGreen == True and h8DarkGreen == True and castling == False:
         castling = True
         return ["e8", "g8"]
+    elif e8LightGreen == True and a8LightGreen == True and castling == False:
+        castling = True
+        return ["e8", "c8"]
 
     if lastMoveSet[0] == '' or lastMoveSet[1] == '':
         return ''
 
     return lastMoveSet
 
+firstTurn = 2
+clientTurns = True
 gameMoveSet = []
 lastMove = ["",""]
 nextBestMove = None
+f= open('logs/logFile.txt', 'a')
+f.write('')
 while True:
-    # screenshot('turn.png', region=(1326, 670,78,16))
-    # turnImg = cv2.imread('turn.png')
-    screenshot('board.png', region=(575,164,735,735))
-    board = cv2.imread('board.png')
-    if getLastMove(board) != '':
-        if lastMove != getLastMove(board):
-            lastMove = getLastMove(board)
-            gameMoveSet.append(lastMove[0] + lastMove[1])
-            stockfish.set_position(gameMoveSet)
-            print('Last moveset: ' + lastMove[0] + lastMove[1])
-            nextBestMove = stockfish.get_best_move()
-            print('Best next move: ' + nextBestMove)
+    screenshot('turn.png', region=(1335, 665,10,16))
+    turnImg = cv2.imread('turn.png')
+    newClientsTurn = checkTurn(turnImg)
+    if clientTurns != newClientsTurn or firstTurn > 0:
+        clientTurns = newClientsTurn
+        cv2.waitKey(1000)
+        screenshot('board.png', region=(575,164,735,735))
+        board = cv2.imread('board.png')
+        if getLastMove(board) != '':
+            nextLastMove = getLastMove(board)
+            if (lastMove[0] + lastMove[1]) != (nextLastMove[0] + nextLastMove[1]):
+                if firstTurn > 0:
+                    firstTurn -= 1
+                lastMove = getLastMove(board)
+                gameMoveSet.append(lastMove[0] + lastMove[1])
+                stockfish.set_position(gameMoveSet)
+                print('Last moveset: ' + lastMove[0] + lastMove[1])
+                f.write(lastMove[0] + lastMove[1]+'\n')
+                nextBestMove = stockfish.get_best_move()
+                print('Best next move: ' + nextBestMove)
+                print("------------------")
     
-    cv2.waitKey(1000)
-    # board = cv2.imread('board.png')
-
-    # letters = list(ascii_lowercase[:8])
-    # letters.index()
-
-    # board_show = cv2.resize(board,(0,0), fx=0.5, fy=0.5)
-    # cv2.imshow('Board', board_show)
-    
-    
-# board = cv2.imread('frame.png')
-
-# print(getLastMove(board))
+    cv2.waitKey(1)
+f.close()
