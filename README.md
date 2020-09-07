@@ -29,4 +29,4 @@ Now we have the last moveset and we can feed are stockfish engine to get predict
    Now go a head and start a game and in the board window it will give you next best move.
 
 # Compatibility Issues
-The program only tested on Chrome and the zoom need to be 100%
+The program only tested on Chrome and the zoom needs to be 100%
