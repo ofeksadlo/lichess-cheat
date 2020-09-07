@@ -47,3 +47,5 @@ So don't even bother trying Bullet mode. It can barley handle Blitz. In long tim
 # Disclaimer 
 This entire project done for the purpose of challenge and education.<br>
 <b>Not for the purpose of cheating<b>
+
+**developed on Python 3.7.7**
