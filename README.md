@@ -27,7 +27,6 @@ Now we have the last moveset and we can feed are stockfish engine to get predict
 5) Run main.py before the real board is visible. After you run it wait a few seconds so the board window will pop up.
    It's getting prioritized over other windows to stay on top.
    Go to the real board and after 1 move it should start giving you predictions.
-   For now it only works for the white player.
 6) The program desinged to start at a fresh board. Otherwise it won't work!
 
 # Compatibility Issues
