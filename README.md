@@ -32,4 +32,4 @@ Now we have the last moveset and we can feed are stockfish engine to get predict
 * The program only tested on Chrome and the zoom needs to be 100%
 * Although the program doesn't snapshot the mouse. Make sure the Board window doesn't get on top of the real board.
 * Technically you can use the program work with any kind of browser on any kind of zoom.
-  As long as you fix the cordinates of the board.
+  As long as you fix the cordinates of the board screenshot.
