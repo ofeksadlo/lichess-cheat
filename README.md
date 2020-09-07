@@ -30,6 +30,9 @@ Now we have the last moveset and we can feed are stockfish engine to get predict
 6) The program desinged to start at a fresh board. Otherwise it won't work!
 
 # Compatibility Issues
+The program is far from being perfect. It has a delay because it snap images.</br>
+In order to detect pieces and it makes it vulnerable for crashing if the oppenent moved too fast.</br>
+So don't even bother trying Bullet mode. It can barley handle Blitz. In long time modes like Rapid or Classical it works perfectly.
 * The program only tested with Chrome on resolution 1920x1080 and the zoom needs to be 100%
 * Although the program doesn't snapshot the mouse.</br> Make sure the Board window doesn't get on top of the real board.
 * Technically you can make the program to work with any kind of browser on any kind of zoom.
