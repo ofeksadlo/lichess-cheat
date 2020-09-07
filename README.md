@@ -24,12 +24,14 @@ Now we have the last moveset and we can feed are stockfish engine to get predict
 3) You need to extract the exe file you downloaded and in main.py code, change the path to your stockfish engine exe file.
 4) About the stockfish.set_depth(16) you can put higher values. The higher the value the more accurate the prediction
    But it's also slower. Using set depth 16 I tied against stockfish level 8 so it's preety strong as it is.
-5) You can go a head and run it for now it only work for white pieces. But soon it will work for black pieces as well.
-   After you run it wait a few seconds so the board window will pop up. It's getting prioritized over other window to stay on top.
-   Now go a head and start a game and in the board window it will give you next best move.
+5) Run main.py before the real board is visible. After you run it wait a few seconds so the board window will pop up.
+   It's getting prioritized over other windows to stay on top.
+   Go to the real board and after 1 move it should start giving you predictions.
+   For now it only works for the white player.
+   
 
 # Compatibility Issues
-* The program only tested on Chrome on resolution 1920x1080 and the zoom needs to be 100%
+* The program only tested with Chrome on resolution 1920x1080 and the zoom needs to be 100%
 * Although the program doesn't snapshot the mouse. Make sure the Board window doesn't get on top of the real board.
 * Technically you can use the program to work with any kind of browser on any kind of zoom.
   As long as you fix the cordinates of the board screenshot and the cell size.
@@ -39,4 +41,3 @@ Now we have the last moveset and we can feed are stockfish engine to get predict
 * Saving games played.
 * Loading game movesets from File.
 * Drawing live on the board to highlight best next move.
-
