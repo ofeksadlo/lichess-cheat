@@ -37,7 +37,7 @@ Now we have the last moveset and we can feed are stockfish engine to get predict
   As long as you fix the cordinates of the board screenshot and the cell size.
 
 # Future plans
-* Adding support for black pieces.
+* ~~Adding support for black pieces~~ (Added).
 * Saving games played.
 * Loading game movesets from File.
 * Drawing live on the board to highlight best next move.
