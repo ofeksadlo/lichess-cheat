@@ -44,4 +44,4 @@ Now we have the last moveset and we can feed are stockfish engine to get predict
 
 # Disclaimer 
 This entire project done for the purpose of challenge and education.<br>
-<b>Use at your own risk!<b>
+<b>Not for the purpose of cheating<b>
