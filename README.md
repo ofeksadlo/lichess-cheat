@@ -33,7 +33,7 @@ Now we have the last moveset and we can feed are stockfish engine to get predict
 # Compatibility Issues
 * The program only tested with Chrome on resolution 1920x1080 and the zoom needs to be 100%
 * Although the program doesn't snapshot the mouse.</br> Make sure the Board window doesn't get on top of the real board.
-* Technically you can use the program to work with any kind of browser on any kind of zoom.
+* Technically you can make the program to work with any kind of browser on any kind of zoom.
   As long as you fix the cordinates of the board screenshot and the cell size.
 
 # Future plans
