@@ -1,7 +1,7 @@
 # lichess-cheat
 Simple chess cheat for lichess based on opencv.
 #
-![Showcase](https://im4.ezgif.com/tmp/ezgif-4-c034eedbf611.gif)
+![Showcase](https://raw.githubusercontent.com/ofeksadlo/lichess-cheat/master/showcase.gif)
 
 # What it does
 Creates a new board window which shows you the best next move. For
