@@ -1,4 +1,4 @@
-# lichess-cheat
+# Lichess-Cheat
 Simple chess cheat for lichess based on opencv.
 #
 ![Showcase](https://raw.githubusercontent.com/ofeksadlo/lichess-cheat/master/showcase.gif)
