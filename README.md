@@ -19,6 +19,14 @@ The detection is done by color matching.
 Now we have the last moveset and we can feed are stockfish engine to get predictions.
 
 # How to make it work
-1) Download the main.py and data folder you
-2) Download stockfish from here https://stockfishchess.org/download/ I'v used 64-bit: Maximally compatible but slow.
-3) You need to extract the exe file you downloaded and in main.py code, change the stockfish path.
+1) Download the main.py and the data folder
+2) Download stockfish from here: https://stockfishchess.org/download/ I'v used 64-bit: Maximally compatible but slow.
+3) You need to extract the exe file you downloaded and in main.py code, change the path to your stockfish engine exe file.
+4) About the stockfish.set_depth(16) you can put higher values. The higher the value the more accurate the prediction
+   But it's also slower. Using set depth 16 I tied against stockfish level 8 so it's preety strong as it is.
+5) You can go a head and run it for now it only work for white pieces. But soon it will work for black pieces as well.
+   After you run it wait a few seconds so the board window will pop up. It's getting prioritized over other window to stay on top.
+   Now go a head and start a game and in the board window it will give you next best move.
+
+# Compatibility Issues
+The program only tested on Chrome and the zoom need to be 100%
