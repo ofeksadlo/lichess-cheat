@@ -5,19 +5,28 @@ from string import ascii_lowercase
 from stockfish import Stockfish
 from datetime import datetime
 
-stockfish = Stockfish('C:\stockfish_20090216_x64_bmi2.exe', parameters={"Threads" : 7, "Ponder" : True, "Skill Level": 20, "Contempt": 0, "Slow Mover": 84})
 
+# First we import the stcokfish engine with a few adjusted parameters
+# The 7 threads is because I have 8 threads and you leave 1 for the system.
+stockfish = Stockfish('C:\stockfish_20090216_x64_bmi2.exe', parameters={"Threads" : 7, "Ponder" : True, "Minimum Thinking Time": 20, "Skill Level": 20, "Hash":16, "Contempt": 0, "Slow Mover": 84})
+# If this parameter will get to high the accuracy will get better but it can cause
+# the entire program to crash.
+stockfish.set_depth(16)
+
+# Creating the board window later on we will draw on it the board with best possible moves highlighted
 cv2.namedWindow('Board')
+# Prioritizing the board window over other windows
 hwnd = win32gui.GetForegroundWindow()
-win32gui.SetWindowPos(hwnd,win32con.HWND_TOPMOST,575,164,200,200,0)
+win32gui.SetWindowPos(hwnd,win32con.HWND_TOPMOST,-16,150,0,0,0)
 
-
+# This function checks if it's the client turn or the opponent turn
+# True for client turn | False for opponent turn
 def checkTurn(turnImg):
     clientTurns = None
-    clientTurns_template = cv2.imread('data/turn.png')
-    opponentTurns_template = cv2.imread('data/noturn.png')
-    PC_clientTurns_template = cv2.imread('data/pc_turn.png')
-    PC_opponentTurns_template = cv2.imread('data/pc_noturn.png')
+    clientTurns_template = cv2.imread('data/turn.dat')
+    opponentTurns_template = cv2.imread('data/noturn.dat')
+    PC_clientTurns_template = cv2.imread('data/pc_turn.dat')
+    PC_opponentTurns_template = cv2.imread('data/pc_noturn.dat')
     if matchImages(turnImg, clientTurns_template) < 30 or matchImages(turnImg, PC_clientTurns_template) < 30:
         clientTurns = True
     elif matchImages(turnImg, opponentTurns_template) < 30 or matchImages(turnImg, PC_opponentTurns_template) < 30:
@@ -31,15 +40,17 @@ def matchImages(img1, img2):
     err /= float(img1.shape[0]*img2.shape[1])
     return err
 
-
+# Using this function we highlight the best moves possible
+# The function gets the board and the moveset we want to highlight
+# And returns the board with the highlighted cells
 def drawOnBoard(board, moveset, cellSize=92):
 
     letters = list(ascii_lowercase[:8])
 
-    movedFromCell_whiteTemplate = cv2.imread('data/white_from.jpg')
-    movedFromCell_blackTemplate = cv2.imread('data/black_from.jpg')
-    movedToCell_whiteTemplate = cv2.imread('data/black_to.jpg')
-    movedToCell_blackTemplate = cv2.imread('data/white_to.jpg')
+    movedFromCell_whiteTemplate = cv2.imread('data/white_from.dat')
+    movedFromCell_blackTemplate = cv2.imread('data/black_from.dat')
+    movedToCell_whiteTemplate = cv2.imread('data/black_to.dat')
+    movedToCell_blackTemplate = cv2.imread('data/white_to.dat')
 
     painted_board = board.copy()
     cell1 = moveset[0] + moveset[1]
@@ -63,10 +74,10 @@ def getLastMove(board, cellSize=92):
     a8LightGreen = False
     castling = False
     # Reading the cell templates later on we will match them to the board cells.
-    movedFromCell_whiteTemplate = cv2.imread('data/white_from.jpg')
-    movedFromCell_blackTemplate = cv2.imread('data/black_from.jpg')
-    movedToCell_whiteTemplate = cv2.imread('data/black_to.jpg')
-    movedToCell_blackTemplate = cv2.imread('data/white_to.jpg')
+    movedFromCell_whiteTemplate = cv2.imread('data/white_from.dat')
+    movedFromCell_blackTemplate = cv2.imread('data/black_from.dat')
+    movedToCell_whiteTemplate = cv2.imread('data/black_to.dat')
+    movedToCell_blackTemplate = cv2.imread('data/white_to.dat')
     # Creating a list with alphabet range a-h (8 letters total).
     letters = list(ascii_lowercase[:8])
     lastMoveSet = ['','']
@@ -89,9 +100,10 @@ def getLastMove(board, cellSize=92):
             # If the cell in the top left corner is green. And in the middle is green as well. Then
             # we found where the player moved from. Otherwise if the cell is green at the top left
             # but not green in the middle. Then it has to be where the player moved to.
-            #
-            #There is an image example in Examples folder
 
+            # Further more we check for possible castling that is why we check for cells e8, a8, h8.
+            # Because this are the possible castling cells of the opponent and are method won't work.
+            # Because we will have in this moveset(for example e8g8) 2 empty green cells.
             if matchImages(board_cell[1:2, 1:2], movedFromCell_whiteTemplate[1:2,1:2]) < 10 and matchImages(board_cell[45:47,45:47], movedFromCell_whiteTemplate[45:47,45:47])<10:
                 if letters[y]+str(8-x) == 'e8':
                     e8LightGreen = True
@@ -106,44 +118,60 @@ def getLastMove(board, cellSize=92):
                 lastMoveSet[1] = letters[y]+str(8-x)
             elif matchImages(board_cell[1:2, 1:2], movedToCell_blackTemplate[1:2,1:2]) < 10:
                 lastMoveSet[1] = letters[y]+str(8-x)
-            
+    # We check if it is a castling
     if e8LightGreen == True and h8DarkGreen == True and castling == False:
         castling = True
         return ["e8", "g8"]
     elif e8LightGreen == True and a8LightGreen == True and castling == False:
         castling = True
         return ["e8", "c8"]
-
+    # If nothing moved we return ''
     if lastMoveSet[0] == '' or lastMoveSet[1] == '':
         return ''
 
     return lastMoveSet
 
-board = None
-firstTurn = 2
+
+# Now we have all the methods we need. We start by creating all the necessary variables.
+
+# Into board we will screenshot the frame. And the detect last moveset
+board = None 
+# When starting a game each player gets a long time for the first turn.
+# For blitz it's 30 seconds and during this time there is no indication who's turn is it. This
+# is why we use firstTurn variable
+firstTurn = True
+# As we start off as white the first to play is the white.
 clientTurns = True
+# This variable will contain the entire movesets of the game. We append
+# each moveset at a time and then get the next best move from stockfish engine.
 gameMoveSet = []
+# Here we store the last moveset.
 lastMove = ["",""]
+# Storing the next best move to later on send it drawOnBoard.
 nextBestMove = None
+# Creating a log file of the last game.
 f= open('logs/logFile.txt', 'a')
+# Deleting the previous game moves.
 f.write('')
 while True:
-    # win32gui.ShowWindow(hwnd, win32con.SW_MINIMIZE)
+    # We snap which turn is it.
     screenshot('turn.png', region=(1335, 665,10,16))
+    # If you wonder why we save the image and then reading it again is because cv2.imread() is diffrent than
+    # the pyautogui.screenshot() object.
     turnImg = cv2.imread('turn.png')
+    # We check if the turn changed
     newClientsTurn = checkTurn(turnImg)
-    if clientTurns != newClientsTurn or firstTurn > 0:
+    if clientTurns != newClientsTurn or firstTurn ==True:
         clientTurns = newClientsTurn
-        if firstTurn > 0:
-            cv2.waitKey(1500)
-        cv2.waitKey(500)
+        if firstTurn == True:
+            clientTurns = False
+            firstTurn = False
+        cv2.waitKey(250)
         screenshot('board.png', region=(575,164,735,735))
         board = cv2.imread('board.png')
         if getLastMove(board) != '':
             nextLastMove = getLastMove(board)
             if (lastMove[0] + lastMove[1]) != (nextLastMove[0] + nextLastMove[1]):
-                if firstTurn > 0:
-                    firstTurn -= 1
                 lastMove = getLastMove(board)
                 gameMoveSet.append(lastMove[0] + lastMove[1])
                 stockfish.set_position(gameMoveSet)
@@ -156,9 +184,7 @@ while True:
     if nextBestMove is not None:
         board_show = cv2.imread('board.png')
         board_show = drawOnBoard(board_show, nextBestMove)
-        board_show = cv2.resize(board_show, None, fx=0.5, fy=0.5)
-        # print(nextBestMove)
-        # win32gui.SetWindowPos(hwnd,win32con.HWND_TOPMOST,575,164,735,735,0)
+        board_show = cv2.resize(board_show, None, fx=0.785, fy=0.785)
         cv2.imshow('Board', board_show)
 
 
