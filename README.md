@@ -41,7 +41,7 @@ So don't even bother trying Bullet mode. It can barley handle Blitz. In long tim
 # Future plans
 * ~~Adding support for black pieces~~ (Added).
 * ~~Saving games played~~ (Added).
-* Auto Play
+* ~~Auto Play~~ (Added check it out through the config)
 * Loading game movesets from File.
 * Drawing live on the board to highlight best next move.
 
