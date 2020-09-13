@@ -63,8 +63,10 @@ Now we have the last moveset and we can feed are stockfish engine to get predict
 The program is far from being perfect. It has a delay because it snap images.</br>
 In order to detect pieces and it makes it vulnerable for crashing if the oppenent moved too fast.</br>
 The cause is because it takes time to detect client move (about half a second). </br>
-If the opponent moved faster than that (By preselecting his move). Than the</br>
-will miss the client move. And the predictions will be wrong.</br>
+If the opponent moved faster than that (By preselecting his move). </br>
+Than the program will miss the clients move. And any predictions from this point will be wrong.</br>
+This can be fixed by detecting last mouse click position. But as far</br>
+as education challenge this project is done.
 So don't even bother trying Bullet mode. It can barley handle Blitz. In long time modes like Rapid or Classical it works perfectly.
 * The program only tested with Chrome on resolution 1920x1080 and the zoom needs to be 100%
 * Although the program doesn't snapshot the mouse.</br> Make sure the Board window doesn't get on top of the real board.
