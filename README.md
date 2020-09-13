@@ -36,13 +36,13 @@ Now we have the last moveset and we can feed are stockfish engine to get predict
    Go to the real board and after 1 move it should start giving you predictions.
 6) The program desinged to start at a fresh board. Otherwise it will miss moves the already happend. </br>
    And the predictions will be wrong.
-7) In the config.ini you can control which color you start as. And use the auto play function.
-   autoPlay: 1 = On, 0 = Off
-   playerColor: 'w' = White, 'b' = Black
-   showBoard: 1 = Show window, 0 Don't show window
-   Default values:
-   autoPlay=0
-   playerColor='w'
+7) In the config.ini you can control which color you start as. And use the auto play function.</br>
+   autoPlay: 1 = On, 0 = Off </br>
+   playerColor: 'w' = White, 'b' = Black</br>
+   showBoard: 1 = Show window, 0 Don't show window</br>
+   Default values:</br>
+   autoPlay=0</br>
+   playerColor='w'</br>
    showBoard=1
    
 
