@@ -24,6 +24,7 @@ Now we have the last moveset and we can feed are stockfish engine to get predict
 3) Stockfish - https://pypi.org/project/stockfish/
 4) Numpy - https://pypi.org/project/numpy/
 5) Pynput - https://pypi.org/project/pynput/
+6) Win32gui - https://pypi.org/project/win32gui/
 
 # How to make it work
 1) Download the main.py and the data folder
