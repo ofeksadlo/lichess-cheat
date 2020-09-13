@@ -255,8 +255,6 @@ while True:
     # We capture which turn is it.
     
    
-    # If you wonder why we save the image and then reading it again it's because cv2.imread() is diffrent than
-    # the pyautogui.screenshot() object. And converting them missing out methods.
     turnImg = screenshot(region=(1335, 665,10,16))
     turnImg = cv2.cvtColor(np.array(turnImg), cv2.COLOR_RGB2BGR)
 
