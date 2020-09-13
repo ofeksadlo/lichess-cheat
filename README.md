@@ -35,7 +35,7 @@ Now we have the last moveset and we can feed are stockfish engine to get predict
 5) Run main.py before the real board is visible. After you run it wait a few seconds so the board window will pop up.
    It's getting prioritized over other windows to stay on top.
    Go to the real board and after 1 move it should start giving you predictions.
-6) The program desinged to start at a fresh board. Otherwise it will miss moves the already happend. </br>
+6) The program desinged to start at a fresh board. Otherwise it will miss moves that already happend. </br>
    And the predictions will be wrong.
 7) In the config.ini you can control which color you start as. And use the auto play function.</br>
    autoPlay On / Off:
