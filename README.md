@@ -62,7 +62,7 @@ Now we have the last moveset and we can feed are stockfish engine to get predict
 # Compatibility Issues
 The program is far from being perfect. It has a delay because it snap images.</br>
 In order to detect pieces and it makes it vulnerable for crashing if the oppenent moved too fast.</br>
-The cause is because it takes time to detect client move (about half a second). </br>
+The cause is it takes time to detect client move (about half a second). </br>
 If the opponent moved faster than that (By preselecting his move). </br>
 Than the program will miss the clients move. And any predictions from this point will be wrong.</br>
 This can be fixed by detecting last mouse click position. But as far</br>
