@@ -18,6 +18,13 @@ One green cell without a piece in it (Where the piece moved from) and one green 
 The detection is done by color matching.
 Now we have the last moveset and we can feed are stockfish engine to get predictions.
 
+# Requirements
+1) Pyautogui - in order to snap the images https://pypi.org/project/PyAutoGUI/
+2) Open-cv - https://pypi.org/project/opencv-python/
+3) Stockfish - https://pypi.org/project/stockfish/
+4) Numpy - https://pypi.org/project/numpy/
+5) Pynput - https://pypi.org/project/pynput/
+
 # How to make it work
 1) Download the main.py and the data folder
 2) Download stockfish from here: https://stockfishchess.org/download/ I'v used "64-bit: Maximally compatible but slow."
