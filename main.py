@@ -1,9 +1,10 @@
-import cv2, win32gui, win32con
+import cv2, win32gui, win32con, win32api
 from pyautogui import screenshot, position, click, moveTo, dragTo, mouseDown, mouseUp
 import numpy as np
 from string import ascii_lowercase
 from stockfish import Stockfish
 from datetime import datetime
+from pynput.mouse import Listener
 
 # First we import the stcokfish engine with a few adjusted parameters
 # The 7 threads is because I have 8 threads and you leave 1 for the system.
@@ -19,8 +20,27 @@ hwnd = win32gui.GetForegroundWindow()
 # # Positining the board window change the values if you don't see it show up.
 win32gui.SetWindowPos(hwnd,win32con.HWND_TOPMOST,-16,150,0,0,0)
 
+posClicked = ''
 
+def on_click(x, y, button, pressed):
+    global posClicked
+    if posClicked != (x, y):
+        posClicked = (x, y)
+        print(posClicked)
 
+def control_click(x, y, handle, button='left'):
+
+    l_param = win32api.MAKELONG(x, y)
+
+    if button == 'left':
+        win32gui.PostMessage(handle, win32con.WM_LBUTTONDOWN, win32con.MK_LBUTTON, l_param)
+        win32gui.PostMessage(handle, win32con.WM_LBUTTONUP, win32con.MK_LBUTTON, l_param)
+
+    elif button == 'right':
+        win32gui.PostMessage(handle, win32con.WM_RBUTTONDOWN, 0, l_param)
+        win32gui.PostMessage(handle, win32con.WM_RBUTTONUP, 0, l_param)
+
+browserHwnd = None
 
 # This function checks if it's the client turn or the opponent turn
 # True for client turn | False for opponent turn
@@ -55,12 +75,19 @@ def playBestMove(moveset):
 
     cell2 = [x, y]
 
-    click(x=cell1[0],y=cell1[1],duration=0.1)
-    
-    click(x=cell2[0],y=cell2[1],duration=0.1)
+    # click(x=cell1[0],y=cell1[1],duration=0.1)
+    # click(x=cell2[0],y=cell2[1],duration=0.1)
 
+    control_click(cell1[0], cell1[1], browserHwnd)
+    control_click(cell2[0], cell2[1], browserHwnd)
+
+    # mouseDown(x=cell1[0],y=cell1[1],duration=0.1, button='right')
+    # mouseUp()
+    # mouseDown(x=cell2[0],y=cell2[1],duration=0.1, button='right')
+    # mouseUp()
     # moveTo(current_mouse_position.x, current_mouse_position.y)
     print(cell1, cell2)
+    print(browserHwnd)
 
 # Using this function we highlight the best moves possible
 # The function gets the board and the moveset we want to highlight
@@ -218,18 +245,21 @@ logFilePath = 'logs/'+datetime.today().strftime("%d-%m-%Y %H-%M-%S")+'.txt'
 f=open('config.cfg', 'r')
 autoPlay = bool(eval(f.readline().split('=')[1]))
 playerColor = eval(f.readline().split('=')[1])
+showBoard = bool(eval(f.readline().split('=')[1]))
 f.close()
-autoPlayFlag = True
+autoPlayFlag = False
 
 if playerColor == 'b':
     clientTurns = False
 while True:
     # We capture which turn is it.
-    screenshot('turn.png', region=(1335, 665,10,16))
+    
    
     # If you wonder why we save the image and then reading it again it's because cv2.imread() is diffrent than
     # the pyautogui.screenshot() object. And converting them missing out methods.
-    turnImg = cv2.imread('turn.png')
+    turnImg = screenshot(region=(1335, 665,10,16))
+    turnImg = cv2.cvtColor(np.array(turnImg), cv2.COLOR_RGB2BGR)
+
     # We check if the turn changed
     newClientsTurn = checkTurn(turnImg)
     if clientTurns != newClientsTurn or firstTurn ==True:
@@ -238,11 +268,14 @@ while True:
             clientTurns = False
             firstTurn = False
         cv2.waitKey(250)
-        screenshot('board.png', region=(575,164,735,735))
-        board = cv2.imread('board.png')
+        board = screenshot(region=(575,164,735,735))
+        board = cv2.cvtColor(np.array(board), cv2.COLOR_RGB2BGR)
         if getLastMove(board, (playerColor == 'w')) != '':
+            print(gameMoveSet)
             nextLastMove = getLastMove(board, (playerColor == 'w'))
             if (lastMove[0] + lastMove[1]) != (nextLastMove[0] + nextLastMove[1]):
+                if browserHwnd == None:
+                    browserHwnd = win32gui.GetForegroundWindow()
                 if autoPlay == True:
                     autoPlayFlag = True
                 lastMove = getLastMove(board, (playerColor == 'w'))
@@ -263,13 +296,14 @@ while True:
     # We draw on our board window the best next move 
 
     if nextBestMove is not None:
-        board_show = cv2.imread('board.png')
-        board_show = drawOnBoard(board_show, nextBestMove, (playerColor == 'w'))
-        board_show = cv2.resize(board_show, (560,560))
-        # This color convertion ment to help differentiate the difference between the 2 boards.
-        # If they have same color it's confusing looking at the 2 boards at the same time.
-        board_show = cv2.cvtColor(board_show, cv2.COLOR_RGB2BGR)
-        cv2.imshow('Board', board_show)
+        if showBoard == True:
+            board_show = board
+            board_show = drawOnBoard(board_show, nextBestMove, (playerColor == 'w'))
+            board_show = cv2.resize(board_show, (560,560))
+            # This color convertion ment to help differentiate the difference between the 2 boards.
+            # If they have same color it's confusing looking at the 2 boards at the same time.
+            board_show = cv2.cvtColor(board_show, cv2.COLOR_RGB2BGR)
+            cv2.imshow('Board', board_show)
         if autoPlayFlag == True:
             playBestMove(nextBestMove)
             autoPlayFlag = False
