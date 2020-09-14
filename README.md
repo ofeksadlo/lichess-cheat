@@ -40,7 +40,7 @@ Now we have the last moveset and we can feed are stockfish engine to get predict
 7) In the config.ini you can control which color you start as. And use the auto play function.</br>
    autoPlay On / Off:
    ```sh
-   autoPlay=1 / autoPlay=1
+   autoPlay=1 / autoPlay=0
    ```
    playerColor White / Black:</br>
    ```sh
