@@ -64,7 +64,7 @@ The program is far from being perfect. It has a delay because it snap images.</b
 In order to detect pieces and it makes it vulnerable for crashing if the oppenent moved too fast.</br>
 The cause is it takes time to detect client move (about half a second). </br>
 If the opponent moved faster than that (By preselecting his move). </br>
-Than the program will miss the clients move. And any predictions from this point will be wrong.</br>
+Then the program will miss the clients move. And any predictions from this point will be wrong.</br>
 This can be fixed by detecting last mouse click position. But as far</br>
 as education challenge this project is done.</br>
 Don't even bother trying Bullet mode. It can barley handle Blitz. In long time modes like Rapid or Classical it works perfectly.
