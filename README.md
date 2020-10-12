@@ -78,7 +78,7 @@ Don't even bother trying Bullet mode. It can barley handle Blitz. In long time m
 * ~~Saving games played~~ (Added).
 * ~~Auto Play~~ (Added check it out through the config. Only works for white player)
 * Loading game movesets from File.
-* Drawing live on the board to highlight best next move.
+* ~~Drawing live on the board to highlight best next move.~~
 
 # Disclaimer 
 **This entire project done for the purpose of challenge and education.**<br>
