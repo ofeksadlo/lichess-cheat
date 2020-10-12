@@ -1,10 +1,54 @@
-import cv2, win32gui, win32con, win32api
+import cv2, win32gui, win32con, win32api, pygame, os
 from pyautogui import screenshot, position, click, moveTo, dragTo, mouseDown, mouseUp
 import numpy as np
 from string import ascii_lowercase
 from stockfish import Stockfish
 from datetime import datetime
 from pynput.mouse import Listener
+from ctypes import windll
+from math import ceil
+import time
+
+os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0,0)
+pygame.init()
+screen = pygame.display.set_mode((1920,1080), pygame.NOFRAME)
+fuchsia = (255, 0, 128)  # Transparency color
+dark_red = (139, 0, 0)
+
+# Set window transparency color
+hwnd = pygame.display.get_wm_info()["window"]
+win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE,
+                       win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) | win32con.WS_EX_LAYERED)
+win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(*fuchsia), 0, win32con.LWA_COLORKEY)
+
+SetWindowPos = windll.user32.SetWindowPos
+
+NOSIZE = 1
+NOMOVE = 2
+TOPMOST = -1
+NOT_TOPMOST = -2
+
+
+
+
+
+
+def alwaysOnTop(yesOrNo):
+    zorder = (NOT_TOPMOST, TOPMOST)[yesOrNo] # choose a flag according to bool
+    hwnd = pygame.display.get_wm_info()['window'] # handle to the window
+    SetWindowPos(hwnd, zorder, 0, 0, 0, 0, NOMOVE|NOSIZE)
+
+alwaysOnTop(True)
+
+def drawBox(x, y, w ,h):
+    # screen.fill(fuchsia)  # Transparent background
+    pygame.draw.rect(screen, [0, 0, 255], [x-5, y-5, w+10, h+10], 5)
+
+screen.fill(fuchsia)
+
+pygame.display.update()
+
+
 
 # First we import the stcokfish engine with a few adjusted parameters
 # The 7 threads is because I have 8 threads and you leave 1 for the system.
@@ -14,19 +58,12 @@ stockfish = Stockfish('C:\stockfish_20090216_x64_bmi2.exe', parameters={"Threads
 stockfish.set_depth(16)
 
 # Creating the board window later on we will draw on it the board with best possible moves highlighted
-cv2.namedWindow('Board')
 # # Prioritizing the board window over other windows
-hwnd = win32gui.GetForegroundWindow()
-# # Positining the board window change the values if you don't see it show up.
-win32gui.SetWindowPos(hwnd,win32con.HWND_TOPMOST,-16,150,0,0,0)
+# hwnd = win32gui.GetForegroundWindow()
+# # # Positining the board window change the values if you don't see it show up.
+# win32gui.SetWindowPos(hwnd,win32con.HWND_TOPMOST,-16,150,0,0,0)
 
-posClicked = ''
 
-def on_click(x, y, button, pressed):
-    global posClicked
-    if posClicked != (x, y):
-        posClicked = (x, y)
-        print(posClicked)
 
 def control_click(x, y, handle, button='left'):
 
@@ -92,14 +129,41 @@ def playBestMove(moveset):
 # Using this function we highlight the best moves possible
 # The function gets the board and the moveset we want to highlight
 # And returns the board with the highlighted cells
+
+
+def getCellFromPos(pos, playerColor, cellSize=92):
+    x, y = pos
+    
+    letter = chr(ceil((x - 575) / cellSize)+96)
+    num = 8-int((y-164)/92)
+    if playerColor == 'w':
+        return letter+str(num)
+    else:
+        letter = chr(ord('a') + (ord('h') - ord(letter)))
+        num = 9 - num
+        return letter + str(num)
+
+def getSetPosition(moveset, playerColor, cellSize=92):
+    if playerColor == 'w':
+        x = 575 + (ord(moveset[0])-96-1) * cellSize
+        y = 164 + (8 - int(moveset[1])) * cellSize
+        fromPos = [x, y]
+        x = 575 + (ord(moveset[2])-96-1) * cellSize
+        y = 164 + (8 - int(moveset[3])) * cellSize
+        toPos = [x, y]
+        return fromPos, toPos
+    else:
+        x = 575 + (7 - (ord(moveset[0]) - ord('a'))) * cellSize
+        y = 164 + (int(moveset[1]) - 1) * cellSize
+        fromPos = [x, y]
+        x = 575 + (7 - (ord(moveset[2]) - ord('a'))) * cellSize
+        y = 164 + (int(moveset[3]) - 1) * cellSize
+        toPos = [x, y]
+        return fromPos, toPos
+    
 def drawOnBoard(board, moveset,whitePlayer, cellSize=92):
 
     letters = list(ascii_lowercase[:8])
-
-    movedFromCell_whiteTemplate = cv2.imread('data/white_from.dat')
-    movedFromCell_blackTemplate = cv2.imread('data/black_from.dat')
-    movedToCell_whiteTemplate = cv2.imread('data/black_to.dat')
-    movedToCell_blackTemplate = cv2.imread('data/white_to.dat')
 
     painted_board = board.copy()
     cell1 = moveset[0] + moveset[1]
@@ -118,10 +182,14 @@ def drawOnBoard(board, moveset,whitePlayer, cellSize=92):
                     painted_board = cv2.rectangle(painted_board, (y*cellSize, x*cellSize), ((y+1)*cellSize, (x+1)*cellSize), (255,0,0), thickness=2)
                 elif  reversed_letters[y]+str(x+1) == cell2:
                     painted_board = cv2.rectangle(painted_board, (y*cellSize, x*cellSize), ((y+1)*cellSize, (x+1)*cellSize), (255,0,0), thickness=2)
-
     return painted_board
 
-
+def drawLiveOnBoard(moveset, playerColor, cellSize=92):
+    fromPos, toPos = getSetPosition(moveset, playerColor)
+    x, y = fromPos
+    drawBox(x, y, cellSize, cellSize)
+    x, y = toPos
+    drawBox(x, y, cellSize, cellSize)
 
 # Gets board image and return last moveset.
 def getLastMove(board, whitePlayer, cellSize=92):
@@ -233,9 +301,7 @@ clientTurns = True
 # each moveset at a time and then get the next best move from stockfish engine.
 gameMoveSet = []
 # Here we store the last moveset.
-lastMove = ["",""]
 # Storing the next best move to later on send it drawOnBoard.
-nextBestMove = None
 # Creating a log file of the last game.
 
 logFilePath = 'logs/'+datetime.today().strftime("%d-%m-%Y %H-%M-%S")+'.txt'
@@ -249,62 +315,68 @@ showBoard = bool(eval(f.readline().split('=')[1]))
 f.close()
 autoPlayFlag = False
 
+
+
 if playerColor == 'b':
     clientTurns = False
+
+
+
+def waitForClick():
+    state_left = win32api.GetKeyState(0x01)  # Left button down = 0 or 1. Button up = -127 or -128
+    state_right = win32api.GetKeyState(0x02)  # Right button down = 0 or 1. Button up = -127 or -128
+
+    a = win32api.GetKeyState(0x01)
+    while a == state_left:
+        a = win32api.GetKeyState(0x01)
+        cv2.waitKey(1)
+    b = win32api.GetKeyState(0x02)
+    if a != state_left:  # Button state changed
+        state_left = a
+        if a < 0:
+            return position()
+    cv2.waitKey(100)
+
+startAsBlackFlag = False
+if playerColor == 'b':
+    startAsBlackFlag = True
+
+
 while True:
     # We capture which turn is it.
-    
-   
+    screen.fill(fuchsia)
+    if startAsBlackFlag == False:
+        clientsMove = ''
+        clientsMove += getCellFromPos(waitForClick(), playerColor)
+        cv2.waitKey(100)
+        clientsMove += getCellFromPos(waitForClick(), playerColor)
+        print('Client moveset: ' + clientsMove)
+        gameMoveSet.append(clientsMove)
+
+        cv2.waitKey(1000)
+
     turnImg = screenshot(region=(1335, 665,10,16))
     turnImg = cv2.cvtColor(np.array(turnImg), cv2.COLOR_RGB2BGR)
-
-    # We check if the turn changed
-    newClientsTurn = checkTurn(turnImg)
-    if clientTurns != newClientsTurn or firstTurn ==True:
-        clientTurns = newClientsTurn
-        if firstTurn == True:
-            clientTurns = False
-            firstTurn = False
-        cv2.waitKey(250)
+    while(checkTurn(turnImg) == False):
+        turnImg = screenshot(region=(1335, 665,10,16))
+        turnImg = cv2.cvtColor(np.array(turnImg), cv2.COLOR_RGB2BGR)
+        cv2.waitKey(1)
+    cv2.waitKey(250)
+    board = screenshot(region=(575,164,735,735))
+    board = cv2.cvtColor(np.array(board), cv2.COLOR_RGB2BGR)
+    opponentMove = getLastMove(board, playerColor == 'w')
+    while opponentMove == '':
         board = screenshot(region=(575,164,735,735))
         board = cv2.cvtColor(np.array(board), cv2.COLOR_RGB2BGR)
-        if getLastMove(board, (playerColor == 'w')) != '':
-            print(gameMoveSet)
-            nextLastMove = getLastMove(board, (playerColor == 'w'))
-            if (lastMove[0] + lastMove[1]) != (nextLastMove[0] + nextLastMove[1]):
-                if browserHwnd == None:
-                    browserHwnd = win32gui.GetForegroundWindow()
-                if autoPlay == True:
-                    autoPlayFlag = True
-                lastMove = getLastMove(board, (playerColor == 'w'))
-                gameMoveSet.append(lastMove[0] + lastMove[1])
-                stockfish.set_position(gameMoveSet)
-                print('Last moveset: ' + lastMove[0] + lastMove[1])
-                f= open(logFilePath, 'a')
-                f.write(lastMove[0] + lastMove[1]+'\n')
-                f.close()
-                nextBestMove = stockfish.get_best_move()
-                if len(nextBestMove) > 4:
-                    nextLastMove = nextBestMove
-                    gameMoveSet.append(nextLastMove)
-                print('Best next move: ' + nextBestMove)
-                print("------------------")
-    
-    
-    # We draw on our board window the best next move 
+        opponentMove = getLastMove(board, playerColor == 'w')
 
-    if nextBestMove is not None:
-        if showBoard == True:
-            board_show = board
-            board_show = drawOnBoard(board_show, nextBestMove, (playerColor == 'w'))
-            board_show = cv2.resize(board_show, (560,560))
-            # This color convertion ment to help differentiate the difference between the 2 boards.
-            # If they have same color it's confusing looking at the 2 boards at the same time.
-            board_show = cv2.cvtColor(board_show, cv2.COLOR_RGB2BGR)
-            cv2.imshow('Board', board_show)
-        if autoPlayFlag == True:
-            playBestMove(nextBestMove)
-            autoPlayFlag = False
-
-    
-    cv2.waitKey(1)
+    print('Opponent move: ' + opponentMove[0]+opponentMove[1])
+    gameMoveSet.append(opponentMove[0] + opponentMove[1])
+    print(gameMoveSet)
+    stockfish.set_position(gameMoveSet)
+    nextBestMove = stockfish.get_best_move()
+    print('Best next move: ' + nextBestMove)
+    drawLiveOnBoard(nextBestMove, playerColor)
+    pygame.display.update()
+    startAsBlackFlag = False
+    cv2.waitKey(500)
