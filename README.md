@@ -17,12 +17,7 @@ That brought up a big problem because if the opponent moved too fast we would mi
 the clients move. Using this method you can even play bullet mode. 
 
 # Requirements
-1) Pyautogui - in order to snap the images https://pypi.org/project/PyAutoGUI/
-2) Open-cv - https://pypi.org/project/opencv-python/
-3) Stockfish - https://pypi.org/project/stockfish/
-4) Numpy - https://pypi.org/project/numpy/
-5) Pynput - https://pypi.org/project/pynput/
-6) Win32gui - https://pypi.org/project/win32gui/
+Use pip install requirements.txt to install all dependencies. 
 
 # How to make it work
 1) Download the main.py and the data folder
