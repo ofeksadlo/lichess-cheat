@@ -9,6 +9,9 @@ from ctypes import windll
 from math import ceil
 import time
 
+
+playerColor = input('Enter your starting color (b = black / w = white): ')
+
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0,0)
 pygame.init()
 screen = pygame.display.set_mode((1920,1080), pygame.NOFRAME)
@@ -310,7 +313,7 @@ logFilePath = 'logs/'+datetime.today().strftime("%d-%m-%Y %H-%M-%S")+'.txt'
 # Loading the user settings.
 f=open('config.cfg', 'r')
 autoPlay = bool(eval(f.readline().split('=')[1]))
-playerColor = eval(f.readline().split('=')[1])
+# playerColor = eval(f.readline().split('=')[1])
 showBoard = bool(eval(f.readline().split('=')[1]))
 f.close()
 autoPlayFlag = False
@@ -336,6 +339,8 @@ def waitForClick():
         if a < 0:
             return position()
     cv2.waitKey(100)
+
+
 
 startAsBlackFlag = False
 if playerColor == 'b':
