@@ -1,0 +1,11 @@
+cv2
+win32gui
+win32con
+win32api
+pygame
+os
+pyautogui
+numpy
+stockfish
+pynput
+ctypes
