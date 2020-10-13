@@ -4,8 +4,7 @@ Simple chess cheat for lichess based on opencv.
 ![Showcase](https://raw.githubusercontent.com/ofeksadlo/lichess-cheat/master/showcase(2).gif)
 
 # What it does
-Creates a new board window which shows you the best next move. For
-you and your opponent.
+Highlight above the board the best next move for you.
 
 # How it works?
 The program will wait for the opponent turn depend on the clients chosen color.</br>
