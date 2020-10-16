@@ -1,7 +1,5 @@
 opencv-python
-win32gui
-win32con
-win32api
+pywin32
 pygame
 pyautogui
 numpy
