@@ -21,7 +21,8 @@ Use pip install -r requirements.txt to install all dependencies.
 
 # How to make it work
 1) Download the main.py and the data folder
-2) Download stockfish from here: https://stockfishchess.org/download/ I'v used "64-bit: Maximally compatible but slow."
+2) Download stockfish from here: https://stockfishchess.org/download/ I'v used "64-bit: Maximally compatible but slow."</br>
+   **Keep in mind the exe file needs to be at same drive as the scripts running on.**
 3) You need to extract the exe file you downloaded and in main.py code, change the path to your stockfish engine exe file.
 4) About the stockfish.set_depth(16) you can put higher values. The higher the value the more accurate the prediction
    But it's also slower. Using set depth 16 I tied against stockfish level 8 so it's preety strong as it is.
