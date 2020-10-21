@@ -17,7 +17,7 @@ That brought up a big problem because if the opponent moved too fast we would mi
 the clients move. Using this method you can even play bullet mode. 
 
 # Requirements
-Use pip install requirements.txt to install all dependencies. 
+Use pip install -r requirements.txt to install all dependencies. 
 
 # How to make it work
 1) Download the main.py and the data folder
