@@ -48,7 +48,12 @@ Use pip install -r requirements.txt to install all dependencies.
 - [ ] Loading game movesets from File.
 - [x] Drawing live on the board to highlight best next move.
 - [ ] More stable clients moves read.
-
+- [ ] Currently the program reads last move using pixel matching.</br>
+      It works but if we miss one move the predictions are wothless.</br>
+      I'm going to develop an improved version of this cheat. That will detect</br>
+      pieces live from the screen. Then translate the board to Forsyth–Edwards</br>
+      Notation to get prediction from current board position. This will allow to solve</br>
+      puzzels and start the cheat mid-game.
 # Disclaimer 
 **This entire project done for the purpose of challenge and education.**<br>
 **Not for the purpose of cheating**
