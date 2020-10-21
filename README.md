@@ -31,14 +31,6 @@ Use pip install requirements.txt to install all dependencies.
    
 
 # Compatibility Issues
-~~The program is far from being perfect. It has a delay because it snap images.</br>
-In order to detect pieces and it makes it vulnerable for crashing if the oppenent moved too fast.</br>
-The cause is it takes time to detect client move (about half a second). </br>
-If the opponent moved faster than that (By preselecting his move). </br>
-Then the program will miss the clients move. And any predictions from this point will be wrong.</br>
-This can be fixed by detecting last mouse click position. But as far</br>
-as education challenge this project is done.</br>
-Don't even bother trying Bullet mode. It can barley handle Blitz. In long time modes like Rapid or Classical it works perfectly.~~ (Fixed)
 * The program only tested with Chrome on resolution 1920x1080 and the zoom needs to be 100%
 * Technically you can make the program to work with any kind of browser on any kind of zoom.
   As long as you fix the cordinates of the board screenshot and the cell size.
@@ -49,12 +41,12 @@ Don't even bother trying Bullet mode. It can barley handle Blitz. In long time m
   3) Check if move is legal as in between a1 - h8.
 
 # Future plans
-* ~~Adding support for black pieces~~ (Added).
-* ~~Saving games played~~ (Added).
-* ~~Auto Play~~ (Added check it out through the config. Only works for white player)
-* Loading game movesets from File.
-* ~~Drawing live on the board to highlight best next move.~~
-* More stable clients moves read.
+- [x] Adding support for black pieces
+- [x] Saving games played
+- [x] Auto Play (Added check it out through the config. Only works for white player)
+- [ ] Loading game movesets from File.
+- [x] Drawing live on the board to highlight best next move.
+- [ ] More stable clients moves read.
 
 # Disclaimer 
 **This entire project done for the purpose of challenge and education.**<br>
