@@ -55,7 +55,7 @@ pygame.display.update()
 
 # First we import the stcokfish engine with a few adjusted parameters
 # The 7 threads is because I have 8 threads and you leave 1 for the system.
-stockfish = Stockfish('C:\stockfish_20090216_x64_bmi2.exe', parameters={"Threads" : 7, "Ponder" : True, "Minimum Thinking Time": 20, "Skill Level": 20, "Hash":16, "Contempt": 0, "Slow Mover": 84})
+stockfish = Stockfish(r'C:\stockfish_20090216_x64.exe', parameters={"Threads" : 7, "Ponder" : True, "Minimum Thinking Time": 20, "Skill Level": 20, "Hash":16, "Contempt": 0, "Slow Mover": 84})
 # If this parameter will get to high the accuracy will get better but it can cause
 # the entire program to crash.
 stockfish.set_depth(16)
@@ -313,8 +313,6 @@ logFilePath = 'logs/'+datetime.today().strftime("%d-%m-%Y %H-%M-%S")+'.txt'
 # Loading the user settings.
 f=open('config.cfg', 'r')
 autoPlay = bool(eval(f.readline().split('=')[1]))
-# playerColor = eval(f.readline().split('=')[1])
-showBoard = bool(eval(f.readline().split('=')[1]))
 f.close()
 autoPlayFlag = False
 
@@ -345,20 +343,30 @@ def waitForClick():
 startAsBlackFlag = False
 if playerColor == 'b':
     startAsBlackFlag = True
+elif autoPlay == True:
+    nextBestMove = 'c2c4'
 
+cv2.waitKey(2000)
+
+browserHwnd = win32gui.GetForegroundWindow()
 
 while True:
     # We capture which turn is it.
     screen.fill(fuchsia)
     if startAsBlackFlag == False:
-        clientsMove = ''
-        clientsMove += getCellFromPos(waitForClick(), playerColor)
-        cv2.waitKey(100)
-        clientsMove += getCellFromPos(waitForClick(), playerColor)
-        print('Client moveset: ' + clientsMove)
-        gameMoveSet.append(clientsMove)
+        if autoPlay == True:
+            playBestMove(nextBestMove)
+            print('Client moveset: ' + nextBestMove)
+            gameMoveSet.append(nextBestMove)
+            clientsMove = ''
+        else:
+            clientsMove += getCellFromPos(waitForClick(), playerColor)
+            cv2.waitKey(100)
+            clientsMove += getCellFromPos(waitForClick(), playerColor)
+            print('Client moveset: ' + clientsMove)
+            gameMoveSet.append(clientsMove)
 
-        cv2.waitKey(1000)
+        cv2.waitKey(4000)
 
     turnImg = screenshot(region=(1335, 665,10,16))
     turnImg = cv2.cvtColor(np.array(turnImg), cv2.COLOR_RGB2BGR)
@@ -382,6 +390,7 @@ while True:
     nextBestMove = stockfish.get_best_move()
     print('Best next move: ' + nextBestMove)
     drawLiveOnBoard(nextBestMove, playerColor)
+    
     pygame.display.update()
     startAsBlackFlag = False
     cv2.waitKey(500)
