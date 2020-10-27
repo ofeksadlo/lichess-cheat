@@ -45,7 +45,7 @@ Use pip install -r requirements.txt to install all dependencies.
 # Future plans
 - [x] Adding support for black pieces
 - [x] Saving games played
-- [x] Auto Play (Added check it out through the config. Only works for white player)
+- [x] Auto Play (Added check it out through the config. Only works for white player and still have some bugs.)
 - [ ] Loading game movesets from File.
 - [x] Drawing live on the board to highlight best next move.
 - [ ] More stable clients moves read.
