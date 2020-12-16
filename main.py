@@ -350,6 +350,8 @@ cv2.waitKey(2000)
 
 browserHwnd = win32gui.GetForegroundWindow()
 
+clientsMove = ''
+
 while True:
     # We capture which turn is it.
     screen.fill(fuchsia)
