@@ -367,6 +367,7 @@ while True:
             clientsMove += getCellFromPos(waitForClick(), playerColor)
             print('Client moveset: ' + clientsMove)
             gameMoveSet.append(clientsMove)
+            clientsMove = ''
 
         cv2.waitKey(4000)
 
