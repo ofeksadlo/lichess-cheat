@@ -27,9 +27,9 @@ Use pip install -r requirements.txt to install all dependencies.
 3) You need to extract the exe file you downloaded and in main.py code, change the path to your stockfish engine exe file.
 4) About the stockfish.set_depth(16) you can put higher values. The higher the value the more accurate the prediction
    But it's also slower. Using set depth 16 I tied against stockfish level 8 so it's preety strong as it is.
-5) Open up liches site and open a game. Now open the program and choose your color.</br>
-   Keep in mind that after you open the program. Dont click on your mouse anywhere</br>
-   but the board.
+5) Open up liches site log in and open a game. Now open the program and choose your color.</br>
+   Keep in mind that after you open the program. Don't click on your mouse anywhere</br>
+   but the board (Don't drag pieces).
    
 
 # Compatibility Issues
