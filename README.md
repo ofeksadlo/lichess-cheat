@@ -59,4 +59,4 @@ Use pip install -r requirements.txt to install all dependencies.
 **This entire project done for the purpose of challenge and education.**<br>
 **Not for the purpose of cheating**
 
-**Developed on Python 3.7.7**
+**Developed on [Python 3.7.7](https://www.python.org/ftp/python/3.7.7/python-3.7.7-amd64.exe)**
