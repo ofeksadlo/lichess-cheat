@@ -27,9 +27,18 @@ Use pip install -r requirements.txt to install all dependencies.
 3) You need to extract the exe file you downloaded and in main.py code, change the path to your stockfish engine exe file.
 4) About the stockfish.set_depth(16) you can put higher values. The higher the value the more accurate the prediction
    But it's also slower. Using set depth 16 I tied against stockfish level 8 so it's preety strong as it is.
-5) Open up liches site log in and open a game. Now open the program and choose your color.</br>
-   Keep in mind that after you open the program. Don't click on your mouse anywhere</br>
-   but the board (Don't drag pieces).
+5) 1) Open up a game while logged in to lichess (Playing as anonymous will change the board size and mess everything</br>
+    Also it's only tested on chrome and on 100% zoom while logged in).</br>
+   2) During the freeze time open up the program choose your starting color. And alt+tab back to the browser (Don't use your</br>
+    mouse).</br>
+    Keep in mind that your mouse clicks from that moment matters.</br>
+    So play like that: 1 click represent the from cell and 1 click represent the to cell when it's your turn.</br>
+    No dragging pieces.</br>
+    No checking youtube for a second</br>
+    It will mess everything and the program will crash</br>
+
+***Keep in mind lichess would most definetly ban you for playing against other players.</br>
+Play only against bots!***
    
 
 # Compatibility Issues
