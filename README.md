@@ -29,8 +29,7 @@ Use pip install -r requirements.txt to install all dependencies.
    But it's also slower. Using set depth 16 I tied against stockfish level 8 so it's preety strong as it is.
 5) 1) Open up a game while logged in to lichess (Playing as anonymous will change the board size and mess everything</br>
     Also it's only tested on chrome and on 100% zoom while logged in).</br>
-   2) During the freeze time open up the program choose your starting color. And alt+tab back to the browser (Don't use your</br>
-    mouse).</br>
+   2) During the freeze time open up the program choose your starting color. And alt+tab back to the browser (Don't use your mouse).</br>
     Keep in mind that your mouse clicks from that moment matters.</br>
     So play like that: 1 click represent the from cell and 1 click represent the to cell when it's your turn.</br>
     No dragging pieces.</br>
