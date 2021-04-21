@@ -5,4 +5,3 @@ pyautogui
 numpy
 stockfish
 pynput
-ctypes
